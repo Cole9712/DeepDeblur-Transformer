@@ -34,12 +34,13 @@ class MSRTNet(nn.Module):
         self.kernel_size = args.kernel_size
 
         self.n_scales = args.n_scales
+        input_resolutions = [args.patch_size//4, args.patch_size//2, args.patch_size]
 
         self.body_models = nn.ModuleList([
-            ResNet(args, 3, 3, mean_shift=False),
+            ResNet(args, 3, 3, mean_shift=False, input_resolution=input_resolutions[0]),
         ])
-        for _ in range(1, self.n_scales):
-            self.body_models.insert(0, ResNet(args, 6, 3, mean_shift=False))
+        for i in range(1, self.n_scales):
+            self.body_models.insert(0, ResNet(args, 6, 3, mean_shift=False,input_resolutions[i]))
 
         self.conv_end_models = nn.ModuleList([None])
         for _ in range(1, self.n_scales):

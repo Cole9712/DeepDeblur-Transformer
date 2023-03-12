@@ -21,6 +21,7 @@ class conv_end(nn.Module):
 
     def forward(self, x):
         return self.uppath(x)
+    
 
 class MSResNet(nn.Module):
     def __init__(self, args):
@@ -44,10 +45,451 @@ class MSResNet(nn.Module):
         self.conv_end_models = nn.ModuleList([None])
         for _ in range(1, self.n_scales):
             self.conv_end_models += [conv_end(3, 12)]
+        # print(self.n_scales)
+        # 3
+        # print(self.body_models)
+        # ModuleList(
+        #   (0): ResNet(
+        #     (body): Sequential(
+        #       (0): Conv2d(6, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #       (1): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (2): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (3): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (4): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (5): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (6): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (7): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (8): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (9): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (10): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (11): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (12): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (13): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (14): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (15): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (16): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (17): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (18): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (19): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (20): Conv2d(64, 3, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #     )
+        #   )
+        #   (1): ResNet(
+        #     (body): Sequential(
+        #       (0): Conv2d(6, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #       (1): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (2): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (3): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (4): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (5): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (6): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (7): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (8): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (9): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (10): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (11): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (12): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (13): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (14): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (15): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (16): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (17): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (18): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (19): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (20): Conv2d(64, 3, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #     )
+        #   )
+        #   (2): ResNet(
+        #     (body): Sequential(
+        #       (0): Conv2d(3, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #       (1): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (2): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (3): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (4): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (5): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (6): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (7): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (8): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (9): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (10): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (11): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (12): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (13): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (14): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (15): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (16): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (17): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (18): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (19): ResBlock(
+        #         (body): Sequential(
+        #           (0): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #           (1): ReLU(inplace=True)
+        #           (2): Conv2d(64, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #         )
+        #       )
+        #       (20): Conv2d(64, 3, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #     )
+        #   )
+        # )
+        # print(self.conv_end_models)
+        # ModuleList(
+        #   (0): None
+        #   (1): conv_end(
+        #     (uppath): Sequential(
+        #       (0): Conv2d(3, 12, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #       (1): PixelShuffle(upscale_factor=2)
+        #     )
+        #   )
+        #   (2): conv_end(
+        #     (uppath): Sequential(
+        #       (0): Conv2d(3, 12, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+        #       (1): PixelShuffle(upscale_factor=2)
+        #     )
+        #   )
+        # )
 
     def forward(self, input_pyramid):
 
         scales = range(self.n_scales-1, -1, -1)    # 0: fine, 2: coarse
+        print(input_pyramid[0].shape)
+        print(input_pyramid[1].shape)
+        print(input_pyramid[2].shape)
 
         for s in scales:
             input_pyramid[s] = input_pyramid[s] - self.mean
@@ -63,5 +505,9 @@ class MSResNet(nn.Module):
 
         for s in scales:
             output_pyramid[s] = output_pyramid[s] + self.mean
+            # print(output_pyramid[s].shape)
+            # torch.Size([1, 3, 180, 320])
+            # torch.Size([1, 3, 360, 640])
+            # torch.Size([1, 3, 720, 1280])
 
         return output_pyramid

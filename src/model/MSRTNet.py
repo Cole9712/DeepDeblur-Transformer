@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from . import common
-from .ResNet import ResNet
+from .ResNetT import ResNetT
 
 
 def build_model(args):
@@ -37,10 +37,10 @@ class MSRTNet(nn.Module):
         input_resolutions = [args.patch_size//4, args.patch_size//2, args.patch_size]
 
         self.body_models = nn.ModuleList([
-            ResNet(args, 3, 3, mean_shift=False, input_resolution=input_resolutions[0]),
+            ResNetT(args, 3, 3, mean_shift=False, input_resolution=input_resolutions[0]),
         ])
         for i in range(1, self.n_scales):
-            self.body_models.insert(0, ResNet(args, 6, 3, mean_shift=False,input_resolutions[i]))
+            self.body_models.insert(0, ResNetT(args, 6, 3, mean_shift=False,input_resolution=input_resolutions[i]))
 
         self.conv_end_models = nn.ModuleList([None])
         for _ in range(1, self.n_scales):

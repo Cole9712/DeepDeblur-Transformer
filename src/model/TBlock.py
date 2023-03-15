@@ -73,6 +73,7 @@ class LeWinTransformerBlock(nn.Module):
                f"win_size={self.win_size}, shift_size={self.shift_size}, mlp_ratio={self.mlp_ratio},modulator={self.modulator}"
 
     def forward(self, x, mask=None):
+        print(x.shape)
         B, L, C = x.shape
         H = int(math.sqrt(L))
         W = int(math.sqrt(L))
@@ -498,3 +499,31 @@ def window_reverse(windows, win_size, H, W, dilation_rate=1):
     else:
         x = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(B, H, W, -1)
     return x
+
+class LinearProjection(nn.Module):
+    def __init__(self, dim, heads = 8, dim_head = 64, dropout = 0., bias=True):
+        super().__init__()
+        inner_dim = dim_head *  heads
+        self.heads = heads
+        self.to_q = nn.Linear(dim, inner_dim, bias = bias)
+        self.to_kv = nn.Linear(dim, inner_dim * 2, bias = bias)
+        self.dim = dim
+        self.inner_dim = inner_dim
+
+    def forward(self, x, attn_kv=None):
+        B_, N, C = x.shape
+        if attn_kv is not None:
+            attn_kv = attn_kv.unsqueeze(0).repeat(B_,1,1)
+        else:
+            attn_kv = x
+        N_kv = attn_kv.size(1)
+        q = self.to_q(x).reshape(B_, N, 1, self.heads, C // self.heads).permute(2, 0, 3, 1, 4)
+        kv = self.to_kv(attn_kv).reshape(B_, N_kv, 2, self.heads, C // self.heads).permute(2, 0, 3, 1, 4)
+        q = q[0]
+        k, v = kv[0], kv[1] 
+        return q,k,v
+
+    def flops(self, q_L, kv_L=None): 
+        kv_L = kv_L or q_L
+        flops = q_L*self.dim*self.inner_dim+kv_L*self.dim*self.inner_dim*2
+        return flops 

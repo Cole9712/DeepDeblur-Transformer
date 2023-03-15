@@ -28,10 +28,10 @@ class ResNetT(nn.Module):
 
         modules = []
         modules.append(common.default_conv(self.in_channels, self.n_feats, self.kernel_size))
-        res = get_conv_output_size(input_resolution, self.kernel_size, 1,(kernel_size // 2))
+        res = get_conv_output_size(input_resolution, self.kernel_size, 1,(self.kernel_size // 2))
         for _ in range(self.n_resblocks):
             modules.append(common.ResBlock(self.n_feats, self.kernel_size))
-        modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res))
+        modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=self.num_heads[0]))
         modules.append(common.default_conv(self.n_feats, self.out_channels, self.kernel_size))
 
         self.body = nn.Sequential(*modules)

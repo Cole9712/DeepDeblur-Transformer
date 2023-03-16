@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 from . import common
-from .TBlock import LeWinTransformerBlock
+from .TBlock import LeWinTransformerBlock, InputProj, OutputProj
 
 def build_model(args):
     return ResNet(args)
@@ -25,15 +25,19 @@ class ResNetT(nn.Module):
         self.mean = self.rgb_range / 2
         
         self.num_heads = [1, 2, 4, 8, 16]
+        self.input_proj = InputProj()
+        self.output_proj = OutputProj()
 
         modules = []
         modules.append(common.default_conv(self.in_channels, self.n_feats, self.kernel_size))
         res = get_conv_output_size(input_resolution, self.kernel_size, 1,(self.kernel_size // 2))
         for _ in range(self.n_resblocks):
             modules.append(common.ResBlock(self.n_feats, self.kernel_size))
+        modules.append(self.input_proj)
         modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=self.num_heads[0]))
+        modules.append(self.output_proj)
         modules.append(common.default_conv(self.n_feats, self.out_channels, self.kernel_size))
-
+        
         self.body = nn.Sequential(*modules)
 
     def forward(self, input):

@@ -96,6 +96,12 @@ class Trainer():
                 batch[0], batch[1], device=self.device, dtype=self.dtype)
 
             with amp.autocast(self.args.amp):
+                # print(input[0].shape)
+                # print(input[1].shape)
+                # print(input[2].shape)
+                # torch.Size([32, 3, 256, 256])
+                # torch.Size([32, 3, 128, 128])
+                # torch.Size([32, 3, 64, 64])
                 output = self.model(input)
                 loss = self.criterion(output, target)
 

@@ -564,7 +564,7 @@ class InputProj(nn.Module):
 
 # Output Projection
 class OutputProj(nn.Module):
-    def __init__(self, in_channel=64, out_channel=3, kernel_size=3, stride=1, norm_layer=None,act_layer=None):
+    def __init__(self, in_channel=64, out_channel=3, kernel_size=3, stride=1, norm_layer=None,act_layer=None,):
         super().__init__()
         self.proj = nn.Sequential(
             nn.Conv2d(in_channel, out_channel, kernel_size=3, stride=stride, padding=kernel_size//2),
@@ -578,10 +578,10 @@ class OutputProj(nn.Module):
         self.in_channel = in_channel
         self.out_channel = out_channel
 
-    def forward(self, x):
+    def forward(self, x, Hi, Wi):
         B, L, C = x.shape
-        H = int(math.sqrt(L))
-        W = int(math.sqrt(L))
+        H = int(math.sqrt(L)) if Hi is None else Hi
+        W = int(math.sqrt(L)) if Wi is None else Wi
         x = x.transpose(1, 2).view(B, C, H, W)
         # x = self.proj(x)
         # if self.norm is not None:

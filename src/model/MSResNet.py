@@ -487,9 +487,9 @@ class MSResNet(nn.Module):
     def forward(self, input_pyramid):
 
         scales = range(self.n_scales-1, -1, -1)    # 0: fine, 2: coarse
-        print(input_pyramid[0].shape)
-        print(input_pyramid[1].shape)
-        print(input_pyramid[2].shape)
+        # print(input_pyramid[0].shape)
+        # print(input_pyramid[1].shape)
+        # print(input_pyramid[2].shape)
 
         for s in scales:
             input_pyramid[s] = input_pyramid[s] - self.mean

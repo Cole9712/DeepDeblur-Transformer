@@ -10,7 +10,7 @@ def get_conv_output_size(input_size, kernel_size, stride=1, padding=0):
     return (input_size - kernel_size + 2*padding) // stride + 1
 
 class ResNetT(nn.Module):
-    def __init__(self, args, in_channels=3, out_channels=3, n_feats=None, kernel_size=None, n_resblocks=None, mean_shift=True, input_resolution=256):
+    def __init__(self, args, in_channels=3, out_channels=3, n_feats=None, kernel_size=None, n_resblocks=None, mean_shift=True, input_resolution=256, num_head=1):
         super(ResNetT, self).__init__()
 
         self.in_channels = in_channels
@@ -24,7 +24,6 @@ class ResNetT(nn.Module):
         self.rgb_range = args.rgb_range
         self.mean = self.rgb_range / 2
         
-        self.num_heads = [1, 2, 4, 8, 16]
         self.input_proj = InputProj()
         self.output_proj = OutputProj()
 
@@ -34,17 +33,20 @@ class ResNetT(nn.Module):
         for _ in range(self.n_resblocks):
             modules.append(common.ResBlock(self.n_feats, self.kernel_size))
         modules.append(self.input_proj)
-        modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=self.num_heads[0]))
-        modules.append(self.output_proj)
-        modules.append(common.default_conv(self.n_feats, self.out_channels, self.kernel_size))
+        modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=num_head))
+        # modules.append(common.default_conv(self.n_feats, self.out_channels, self.kernel_size))
         
         self.body = nn.Sequential(*modules)
+        self.end_conv = common.default_conv(self.n_feats, self.out_channels, self.kernel_size)
 
-    def forward(self, input):
+    def forward(self, input, H=None, W=None):
         if self.mean_shift:
             input = input - self.mean
+        # print("H:",H," W:",W)
 
         output = self.body(input)
+        output = self.output_proj(output,H,W)
+        output = self.end_conv(output)
 
         if self.mean_shift:
             output = output + self.mean

@@ -67,7 +67,7 @@ group_amp.add_argument('--init_scale', type=float, default=1024., help='initial 
 # Training
 group_train = parser.add_argument_group('Training specs')
 group_train.add_argument('--patch_size', type=int, default=256, help='training patch size')
-group_train.add_argument('--batch_size', type=int, default=16, help='input batch size for training')
+group_train.add_argument('--batch_size', type=int, default=28, help='input batch size for training')
 group_train.add_argument('--split_batch', type=int, default=1, help='split a minibatch into smaller chunks')
 group_train.add_argument('--augment', type=str2bool, default=True, help='train with data augmentation')
 

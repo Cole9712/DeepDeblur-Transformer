@@ -38,6 +38,7 @@ def main_worker(rank, args):
                 trainer.fill_evaluation(epoch, 'test')
 
     for epoch in range(args.start_epoch, args.end_epoch+1):
+        # print("current epoch:", epoch)
         if args.do_train:
             trainer.train(epoch)
 
@@ -45,6 +46,8 @@ def main_worker(rank, args):
             if epoch % args.validate_every == 0:
                 if trainer.epoch != epoch:
                     trainer.load(epoch)
+                print("epoch:", epoch)
+                print(args.validate_every)
                 trainer.validate(epoch)
 
         if args.do_test:

@@ -30,10 +30,27 @@ class ResNetT(nn.Module):
         modules = []
         modules.append(common.default_conv(self.in_channels, self.n_feats, self.kernel_size))
         res = get_conv_output_size(input_resolution, self.kernel_size, 1,(self.kernel_size // 2))
-        for _ in range(self.n_resblocks):
+        for i in range(self.n_resblocks):
+            # if i==7:
+            #     modules.append(self.input_proj)
+            #     modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=num_head))
+            #     modules.append(self.output_proj)
+            # if i==14:
+            #     modules.append(self.input_proj)
+            #     modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=num_head))
+            #     modules.append(self.output_proj)
+            if i==(self.n_resblocks//3):
+                modules.append(self.input_proj)
+                modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=num_head))
+                modules.append(self.output_proj)
+            if i==((self.n_resblocks//3)*2):
+                modules.append(self.input_proj)
+                modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=num_head))
+                modules.append(self.output_proj)
             modules.append(common.ResBlock(self.n_feats, self.kernel_size))
         modules.append(self.input_proj)
         modules.append(LeWinTransformerBlock(dim=self.n_feats, input_resolution=(res,res), num_heads=num_head))
+        modules.append(self.output_proj)
         # modules.append(common.default_conv(self.n_feats, self.out_channels, self.kernel_size))
         
         self.body = nn.Sequential(*modules)
@@ -43,9 +60,15 @@ class ResNetT(nn.Module):
         if self.mean_shift:
             input = input - self.mean
         # print("H:",H," W:",W)
+        output = input
+        for module in self.body:
+            if isinstance(module, (OutputProj)):
+                output = module(output, H, W)
+            else:
+                output = module(output)
 
-        output = self.body(input)
-        output = self.output_proj(output,H,W)
+        # output = self.body(input)
+        # output = self.output_proj(output,H,W)
         output = self.end_conv(output)
 
         if self.mean_shift:

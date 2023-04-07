@@ -1,28 +1,19 @@
-# DeepDeblur-PyTorch
+# DeepDeblur-Transformer
 
-This is a pytorch implementation of our research. Please refer to our CVPR 2017 paper for details:
+We proposed an architecture, consisting of 3 convolutional layers and 1 LeWin Transformer called MSRTNet to perform video deblurring tasks.
+
+The report for this architecture can be found [here](https://github.com/Cole9712/DeepDeblur-Transformer/blob/master/CMPT_733_Final_Report.pdf).
+
+The original paper for this this Multi-scale Convolutional Neural Network Implementation:
 
 Deep Multi-scale Convolutional Neural Network for Dynamic Scene Deblurring
 [[paper](http://openaccess.thecvf.com/content_cvpr_2017/papers/Nah_Deep_Multi-Scale_Convolutional_CVPR_2017_paper.pdf)]
 [[supplementary](http://openaccess.thecvf.com/content_cvpr_2017/supplemental/Nah_Deep_Multi-Scale_Convolutional_2017_CVPR_supplemental.zip)]
 [[slide](https://drive.google.com/file/d/1sj7l2tGgJR-8wTyauvnSDGpiokjOzX_C/view?usp=sharing)]
 
-If you find our work useful in your research or publication, please cite our work:
-```
-@InProceedings{Nah_2017_CVPR,
-  author = {Nah, Seungjun and Kim, Tae Hyun and Lee, Kyoung Mu},
-  title = {Deep Multi-Scale Convolutional Neural Network for Dynamic Scene Deblurring},
-  booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-  month = {July},
-  year = {2017}
-}
-```
-
-Original Torch7 implementaion is available [here](https://github.com/SeungjunNah/DeepDeblur_release).
-
 ## Dependencies
 
-* python 3 (tested with anaconda3)
+* python 3
 * PyTorch 1.6
 * tqdm
 * imageio
@@ -31,12 +22,10 @@ Original Torch7 implementaion is available [here](https://github.com/SeungjunNah
 * matplotlib
 * readline
 
-Please refer to [this issue](https://github.com/SeungjunNah/DeepDeblur-PyTorch/issues/5#issuecomment-651177352) for the versions.
-
 ## Datasets
 
 * GOPRO_Large: [link](https://seungjunnah.github.io/Datasets/gopro)
-* REDS: [link](https://seungjunnah.github.io/Datasets/reds)
+* DVD: [link](https://www.cs.ubc.ca/labs/imager/tr/2017/DeepVideoDeblurring/#dataset)
 
 ## Usage examples
 
@@ -53,13 +42,26 @@ The dataset location should be like:
 ```bash
 # GOPRO_Large dataset
 ~/Research/dataset/GOPRO_Large/train/GOPR0372_07_00/blur_gamma/....
-# REDS dataset
-~/Research/dataset/REDS/train/train_blur/000/...
 ```
 
 * Example commands
 
 ```bash
+# Training on A100-80G GPU
+python main.py --n_GPUs 1 --batch_size 80 --save_dir GOPRO_128_1000 --dataset GOPRO_Large --model MSRTNet --end_epoch 1000 --patch_size 128
+
+# Training with larger learning rate
+python main.py --n_GPUs 1 --batch_size 80 --save_dir GOPRO_128_1000 --dataset GOPRO_Large --model MSRTNet --end_epoch 1000 --patch_size 128 --lr 2e-4
+
+# Train using less ResNet Block
+python main.py --n_GPUs 1 --batch_size 80 --save_dir GOPRO_128_9R3L --dataset GOPRO_Large --model MSRTNet --end_epoch 1000 --patch_size 128 --n_resblocks 9
+```
+
+```bash
+# Inference
+python main.py --n_GPUs 1 --save_dir GOPRO_TMP --do_train false --dataset GOPRO_Large --model MSRTNet
+```
+<!-- ```bash
 # single GPU training
 python main.py --n_GPUs 1 --batch_size 8 # save the results in default experiment/YYYY-MM-DD_hh-mm-ss
 python main.py --n_GPUs 1 --batch_size 8 --save_dir GOPRO_L1  # save the results in experiment/GOPRO_L1
@@ -135,9 +137,9 @@ python launch.py --n_GPUs 2 main.py --dataset GOPRO_Large --milestones 500 750 9
 python launch.py --n_GPUs 4 main.py --dataset REDS --milestones 100 150 180 --end_epoch 200 --do_test false
 ```
 
-For more advanced usage, please take a look at src/option.py
+For more advanced usage, please take a look at src/option.py -->
 
-## Results
+<!-- ## Results
 
 * Single-precision training results
 
@@ -213,4 +215,4 @@ from skimage.metrics import structural_similarity
 ssim = structural_similarity(ref_im, res_im, multichannel=True, gaussian_weights=True, use_sample_covariance=False)
 ```
 `SSIM` class in [src/loss/metric.py](src/loss/metric.py) supports PyTorch.  
-SSIM function in MATLAB is not correct if applied to RGB images. See [this issue](https://github.com/SeungjunNah/DeepDeblur_release/issues/51) for details.
+SSIM function in MATLAB is not correct if applied to RGB images. See [this issue](https://github.com/SeungjunNah/DeepDeblur_release/issues/51) for details. -->
